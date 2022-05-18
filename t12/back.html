@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="en"><head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
+  <title>info</title>
+</head>
+
+<body>
+  <div></div><div>hello,AxiosError: Network Error</div>
+
+<script>
+  const clientID = '91c55435a74a40aa933b',
+    clientSecret = 'f7312e0ba3b3e593fa3381fd766bb044fda9ac6d'
+  const getQueryValue = (queryName) => {
+    let reg = new RegExp(`(^|&)${queryName}=([^&]*)(&|$)`, "i")
+    let r = window.location.search.substring(1).match(reg)
+    if (r != null) {
+      return decodeURI(r[2])
+    } else {
+      return null
+    }
+  }
+  axios.default.headers={
+        'Access-Control-Allow-Origin': '*',
+        'Content-Type': 'application/x-www-form-urlencoded',
+        'Accept': 'text/json'
+      }
+  let code = getQueryValue('code')
+  if (code && getQueryValue('state') == 'Login') {
+    axios({
+      method: 'post',
+      url: `https://github.com/login/oauth/access_token?code=${code}&client_id=${clientID}&client_secret=${clientSecret}`
+    }).then(resp => {
+      console.log(resp.data)
+      document.querySelector('div').insertAdjacentHTML('afterend', `<div>hello,${resp.login}</div>`)
+    }).catch(err => {
+      console.log(err)      
+      document.querySelector('div').insertAdjacentHTML('afterend', `<div>hello,${err}</div>`)
+    })
+  }
+
+</script>
+</body></html>
